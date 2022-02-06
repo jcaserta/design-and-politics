@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+      <link href="/sitecss/style.css" type="text/css" rel="stylesheet">
+  </head>
+  <body class="permalink">
+    <div class="side">
+      <div class="menutext">
+        ↘
+        <ul>
+    {% for post in site.posts %}
+          <li><a class="post-link" href="{{ post.url | prepend: site.github.url }}">
+         {{ post.title }}
+       </a></li>
+        {% endfor %}
+      </ul>
+      </div>
+   </div>
+   <div class="side2">
+              <h1>{{ page.title }}</h1>
+
+            <time datetime="page.date">{{ page.date | date: "%B %-d, %Y" }}</time>
+        <article>
+          {{ content }}
+        </article>
+   </div>
+  </body>
+</html>

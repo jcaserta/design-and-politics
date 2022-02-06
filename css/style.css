@@ -1,0 +1,27 @@
+.backgroundcolor {
+	background: blue;
+	height: 1200px;
+	width: 100%;
+	display: inline-block;
+	margin: -10px;
+}
+
+.jake p, .jake ol, .jake ul {
+	font-family: monospace;
+	font-size: 24px;
+	max-width: 50ch;
+}
+
+.jake p {
+	font-family: 'space mono';
+}
+
+h2 {
+	font-family: helvetica, sans-serif;
+	font-size: 50px;
+}
+
+li {
+	font-family: helvetica, sans-serif;
+	font-size: 50px;
+}
