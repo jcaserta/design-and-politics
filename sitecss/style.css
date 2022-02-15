@@ -34,7 +34,7 @@
   
   
 body {
-	font-size: 1.5rem; font-family: "cmu"; font-weight: normal;
+	font-size: 1.5rem; font-family: "cmu"; font-weight: normal; color: black;
 	text-rendering: optimizeLegibility; 
 }
 	.side {
