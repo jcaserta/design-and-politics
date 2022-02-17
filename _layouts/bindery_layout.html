@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bindery Simple</title>
+  <style>
+    .fullbleed img, .bleed img { width: 100%; }
+    .bleed.pair { display: flex; transform: rotate(180deg)}
+    .bleed.pair img { transform: scale(.9)}
+    mark { border-bottom: 2px solid cyan; background: none; }
+    details { display: none; }
+    .fullbleed { margin: 0; }
+    .fullbleed figcaption { margin-left: 4em;  }
+    .footnote { font-size: .7em;  }
+    h2, h3 { margin-bottom: .2em; }
+    sup, a sup { line-height: 0; text-decoration: none;  }
+    .footnote a { text-decoration: none;}
+    figure img  { transform: rotate(-90deg)}
+    .credit { display: inline-block; text-align: right; margin: 2em; }
+    figcaption { font-size: .7em; font-style: italic; margin: 2em; }
+    *  { color: black; font-family: Arnhem-Blond; line-height: 125%; -webkit-font-smoothing: antialiased; }
+    p {  font-size: 1em; columns: 1; margin: 0; text-indent: 2em; text-rendering: optimizeLegibility; }
+    h2 + p, h3 + p, h4 + p, p:first-of-type { text-indent: 0; }
+    .content { columns: 2; }
+  </style>
+  <link rel="stylesheet" type="text/css" href="/sitecss/bindery_style.css">
+</head>
+
+<body>
+  <div class="content">
+
+    {{ content }}
+  </div>
+
+  <script src="/js/bindery.min.js"></script>
+  <script src="https://unpkg.com/bindery-controls"></script>
+<script>
+    Bindery.makeBook({
+      content: '.content',
+      pageSetup: {
+        size: { width: '8.5in', height: '11in' },
+        margin: { top: '40pt', inner: '3in', outer: '20pt', bottom: '40pt' },
+      },
+      rules: [
+      Bindery.PageBreak({ selector: "h1", position: "after", continue: "next" }), Bindery.PageBreak({ selector: ".next", position: "after", continue: "next" }),
+        Bindery.Split({
+          selector: "*",
+          toNext: "bindery-continues",
+          fromPrevious: "bindery-continues-from",
+        }),
+        Bindery.FullBleedPage({
+          selector: '.bleed',
+          continue: 'next',
+          rotate: 'clockwise'
+        }),
+        Bindery.FullBleedSpread({
+          selector: '.fullbleed',
+          continue: 'next',
+          rotate: 'clockwise',
+        }),
+        Bindery.RunningHeader({
+          render: (page) => {
+            const nullPageSelectors = [
+              ".full-bleed-page",
+              ".title-section",
+              ".credits-section",
+              ".chapter-title",
+              ".post-header",
+              ".hero-figure",
+              ".rotated-med-figure",
+              ".med-figure",
+              ".big-figure"
+            ];
+            if (page.isEmpty) return "";
+            else if (page.element.querySelector(".half-title-section")) return `{{ site.author }}<span class="page-number"></span>`;
+            else if (page.element.querySelector(nullPageSelectors.join(", "))) return "";
+            else if (page.element.querySelector(".toc-section") && page.isLeft) return `<span class="page-number">${page.number}</span>Contents`;
+            else if (page.element.querySelector(".index-section") && page.isLeft) return `<span class="page-number">${page.number}</span>Index`;
+            else if (page.isLeft) return `<span class="page-number">${page.number} - </span>${page.heading.h2}`;
+            else if (page.isRight) return `${page.heading.h1} - <span class="page-number">${page.number}</span>`;
+          },
+        }),
+        Bindery.Footnote({
+          selector: ".content a",
+          render: (el, number) => `<span class="footnote"><sup>${number}</sup><a href="${el.href}">${el.href}</a></span>`,
+        }),
+        Bindery.Footnote({
+          selector: "details",
+          render: (el, number) => `<span class="footnote">${el.textContent}</span>`,
+        }),
+        Bindery.Counter({
+          incrementEl: "figcaption",
+          replaceEl: "figcaption",
+          replace: (el, counterValue) => {
+            el.insertAdjacentHTML('afterbegin', `<span class="figcaption-counter">Fig. ${counterValue}. </span>`);
+            return el;
+          }
+        }),
+        Bindery.PageReference({
+          selector: ".toc a",
+          replace: (el, number) => {
+            el.insertAdjacentHTML("afterbegin", `<span class="number">${number}</span>`);
+            return el;
+          }
+        }),
+        Bindery.PageReference({
+          selector: ".index-section li",
+          createTest: (el) => {
+            const term = el.textContent.toLowerCase().trim();
+            return (pageEl) => {
+              const query = pageEl.querySelector(".content-section");
+              return query ? query.textContent.toLowerCase().includes(term) : false;
+            }
+          },
+          replace: (el, pageRanges) => {
+            el.insertAdjacentHTML("beforeend", `<span class="page-ranges">${pageRanges}</span>`);
+            return el;
+          },
+        }),
+      ],
+    });
+  </script>
+
+
+</body>
+</html>

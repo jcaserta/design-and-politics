@@ -128,15 +128,17 @@ ul, li, p {
 table, th, td {
 	font-size: 24px;
 	max-width: 60ch;
-	color: #34495E;
+	padding-right: 1rem;
 }
 
+td:first-child { 	color: #34495E;
+}
 img { width: 100%; height: auto; }
 /* highlight color */
 ::selection {
   background: #E74C3C;
 }
-strong { 	font-family: CooperHewitt, sans-serif;
+ strong { 	font-family: CooperHewitt, sans-serif;
 	font-weight: normal;
 	color: #444;
 	font-size: 1.4rem;
